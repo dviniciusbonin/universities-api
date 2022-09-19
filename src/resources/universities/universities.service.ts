@@ -18,7 +18,7 @@ export class UniversitiesService {
       name: createUniversityDto.name
     }).exec();
 
-    if(universityAlreadyExist) {
+    if (universityAlreadyExist) {
       throw new ForbiddenException('University already exists with this country/state-province/name');
     }
 
@@ -26,8 +26,11 @@ export class UniversitiesService {
     return createUniversity.save();
   }
 
-  findAll() {
-    return this.universityModel.find().limit(20);
+  findAll(country: string, page: number, all: boolean = false) {
+    if (all)
+      return this.universityModel.find(country ? { country } : {});
+
+    return this.universityModel.find(country ? { country } : {}).skip(--page * 20).limit(20);
   }
 
   findOne(id: string) {
@@ -36,8 +39,18 @@ export class UniversitiesService {
     }).exec();
   }
 
-  update(id: number, updateUniversityDto: UpdateUniversityDto) {
-    return `This action updates a #${id} university`;
+  update(id: string, updateUniversityDto: UpdateUniversityDto) {
+    return this.universityModel.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          name: updateUniversityDto.name,
+          domains: updateUniversityDto.domains,
+          web_pages: updateUniversityDto.web_pages
+        }
+      },
+      { new: true },
+    );
   }
 
   remove(id: string) {

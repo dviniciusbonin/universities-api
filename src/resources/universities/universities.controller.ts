@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
 import { UniversitiesService } from './universities.service';
 import { CreateUniversityDto } from './dto/create-university.dto';
 import { UpdateUniversityDto } from './dto/update-university.dto';
+import { PaginationUniversity } from './dto/pagination-university';
 
 @Controller('universities')
 export class UniversitiesController {
@@ -13,8 +14,8 @@ export class UniversitiesController {
   }
 
   @Get()
-  findAll() {
-    return this.universitiesService.findAll();
+  findAll(@Query() {country, page, all}: PaginationUniversity) {
+    return this.universitiesService.findAll(country, page, all);
   }
 
   @Get(':id')
@@ -22,9 +23,9 @@ export class UniversitiesController {
     return this.universitiesService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateUniversityDto: UpdateUniversityDto) {
-    return this.universitiesService.update(+id, updateUniversityDto);
+    return this.universitiesService.update(id, updateUniversityDto);
   }
 
   @Delete(':id')
