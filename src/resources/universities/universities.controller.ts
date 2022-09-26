@@ -3,12 +3,16 @@ import { UniversitiesService } from './universities.service';
 import { CreateUniversityDto } from './dto/create-university.dto';
 import { UpdateUniversityDto } from './dto/update-university.dto';
 import { PaginationUniversity } from './dto/pagination-university';
+import { ApiCreatedResponse, ApiForbiddenResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Universities')
 @Controller('universities')
 export class UniversitiesController {
   constructor(private readonly universitiesService: UniversitiesService) {}
 
   @Post()
+  @ApiCreatedResponse({ description: 'The record has been successfully created.'})
+  @ApiForbiddenResponse({ description: 'Forbidden.'})
   create(@Body() createUniversityDto: CreateUniversityDto) {
     return this.universitiesService.create(createUniversityDto);
   }
